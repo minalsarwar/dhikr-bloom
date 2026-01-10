@@ -35,17 +35,10 @@ export function DhikrInput({ value, onChange, suggestions }: DhikrInputProps) {
           />
         </button>
       </div>
-      
-      {/* Hint text */}
-      {!isFocused && !isOpen && (
-        <p className="text-[10px] text-muted-foreground/60 text-center mt-1.5 animate-pulse">
-          ✏️ Tap to type your own or choose from list
-        </p>
-      )}
 
       {/* Dropdown Suggestions */}
       <div
-        className={`absolute top-full left-0 right-0 mt-2 glass-strong rounded-2xl border border-border/50 overflow-hidden z-50 transition-all duration-300 origin-top ${
+        className={`absolute top-full left-0 right-0 mt-2 glass-strong rounded-2xl border border-border/50 z-50 transition-all duration-300 origin-top max-h-64 overflow-y-auto ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none"

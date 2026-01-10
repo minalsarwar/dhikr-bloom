@@ -40,7 +40,19 @@ export function CounterRing({
 
   return (
     <button
-      onClick={onClick}
+      onClick={(e) => {
+        // Calculate center of the button for ripple effect
+        const rect = e.currentTarget.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        // Create synthetic event with centered coordinates
+        const syntheticEvent = {
+          ...e,
+          clientX: rect.left + centerX,
+          clientY: rect.top + centerY,
+        } as React.MouseEvent<HTMLButtonElement>;
+        onClick(syntheticEvent);
+      }}
       disabled={isComplete}
       className="relative group cursor-pointer focus:outline-none transition-transform duration-300 hover:scale-[1.02] active:scale-95"
     >
