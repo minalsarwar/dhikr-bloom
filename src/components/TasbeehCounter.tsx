@@ -213,10 +213,10 @@ export function TasbeehCounter() {
         <div className="text-center space-y-1">
           <div className="flex items-center justify-center gap-2">
             <Sparkles className="w-5 h-5 text-primary animate-bounce-soft" />
-            <h1 className="text-2xl md:text-3xl font-bold text-gradient">DhikrBloom</h1>
-            <Sparkles className="w-5 h-5 text-secondary animate-bounce-soft delay-100" />
+            <h1 className="text-2xl md:text-3xl font-bold text-primary">DhikrBloom</h1>
+            <Sparkles className="w-5 h-5 text-primary animate-bounce-soft delay-100" />
           </div>
-          <p className="text-muted-foreground text-xs">Nurture Your Soul, One Count at a Time</p>
+          <p className="text-primary/70 text-xs">Nurture Your Soul, One Count at a Time</p>
         </div>
 
         {/* Dhikr Input */}
@@ -250,17 +250,16 @@ export function TasbeehCounter() {
             size="icon-lg"
             onClick={handleDecrement}
             disabled={state.count === 0}
-            className="group"
+            className="group border-primary/30 hover:border-primary hover:bg-primary/10"
           >
-            <Minus className="w-5 h-5 transition-transform group-hover:scale-110" />
+            <Minus className="w-5 h-5 text-primary transition-transform group-hover:scale-110" />
           </Button>
 
           <Button
-            variant="counter"
             size="icon-xl"
             onClick={handleIncrement}
             disabled={isComplete}
-            className="relative overflow-hidden"
+            className="relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
           >
             <Plus className="w-7 h-7 transition-transform hover:rotate-90" />
             {ripples.map((ripple) => (
@@ -283,9 +282,9 @@ export function TasbeehCounter() {
             variant="outline"
             size="icon-lg"
             onClick={handleReset}
-            className="group"
+            className="group border-primary/30 hover:border-primary hover:bg-primary/10"
           >
-            <RotateCcw className="w-5 h-5 transition-transform group-hover:-rotate-180 duration-500" />
+            <RotateCcw className="w-5 h-5 text-primary transition-transform group-hover:-rotate-180 duration-500" />
           </Button>
         </div>
       </div>
