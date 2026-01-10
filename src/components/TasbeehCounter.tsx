@@ -263,10 +263,11 @@ export function TasbeehCounter() {
           </Button>
 
           <Button
+            variant="ghost"
             size="icon-xl"
             onClick={handleIncrement}
             disabled={isComplete}
-            className="relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
+            className="relative overflow-hidden !bg-primary hover:!bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
           >
             <Plus className="w-7 h-7 text-primary-foreground transition-transform hover:rotate-90" />
           </Button>
