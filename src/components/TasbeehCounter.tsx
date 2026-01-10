@@ -240,7 +240,14 @@ export function TasbeehCounter() {
         {/* Target Display */}
         <TargetSelector
           target={state.target}
-          onChange={(target) => setState((prev) => ({ ...prev, target }))}
+          onChange={(target) => {
+            setState((prev) => ({
+              ...prev,
+              target,
+              count: target < prev.target ? 0 : prev.count,
+            }));
+            hasShownComplete.current = false;
+          }}
         />
 
         {/* Control Buttons */}
@@ -259,9 +266,9 @@ export function TasbeehCounter() {
             size="icon-xl"
             onClick={handleIncrement}
             disabled={isComplete}
-            className="relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
+            className="relative overflow-hidden bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)_/_0.9)] text-white shadow-lg shadow-primary/30"
           >
-            <Plus className="w-7 h-7 transition-transform hover:rotate-90" />
+            <Plus className="w-7 h-7 text-white transition-transform hover:rotate-90" />
             {ripples.map((ripple) => (
               <span
                 key={ripple.id}
