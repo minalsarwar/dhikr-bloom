@@ -71,7 +71,7 @@ export function TasbeehCounter() {
   const [state, setState] = useState<TasbeehState>({
     count: 0,
     target: 33,
-    dhikr: "SubhanAllah",
+    dhikr: "La ilaha illallah",
     theme: "light",
     colorTheme: "lavender",
     soundEnabled: false,
@@ -266,23 +266,9 @@ export function TasbeehCounter() {
             size="icon-xl"
             onClick={handleIncrement}
             disabled={isComplete}
-            className="relative overflow-hidden bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)_/_0.9)] text-white shadow-lg shadow-primary/30"
+            className="relative overflow-hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
           >
-            <Plus className="w-7 h-7 text-white transition-transform hover:rotate-90" />
-            {ripples.map((ripple) => (
-              <span
-                key={ripple.id}
-                className="absolute bg-primary-foreground/30 rounded-full animate-ripple"
-                style={{
-                  left: ripple.x,
-                  top: ripple.y,
-                  width: 20,
-                  height: 20,
-                  marginLeft: -10,
-                  marginTop: -10,
-                }}
-              />
-            ))}
+            <Plus className="w-7 h-7 text-primary-foreground transition-transform hover:rotate-90" />
           </Button>
 
           <Button

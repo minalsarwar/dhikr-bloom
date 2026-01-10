@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Target, Check } from "lucide-react";
+import { Crosshair, Check } from "lucide-react";
 
 interface TargetSelectorProps {
   target: number;
@@ -23,7 +23,7 @@ export function TargetSelector({ target, onChange }: TargetSelectorProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex items-center gap-2 text-primary">
-        <Target className="w-4 h-4" />
+        <Crosshair className="w-4 h-4" />
         <span className="text-sm font-medium">Target</span>
       </div>
 

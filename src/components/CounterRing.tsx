@@ -143,18 +143,18 @@ export function CounterRing({
         </div>
       </div>
 
-      {/* Click Ripples */}
+      {/* Click Ripples - centered in the counter ring */}
       {ripples.map((ripple) => (
         <span
           key={ripple.id}
           className="absolute bg-primary/30 rounded-full animate-ripple pointer-events-none"
           style={{
-            left: ripple.x,
-            top: ripple.y,
-            width: 40,
-            height: 40,
-            marginLeft: -20,
-            marginTop: -20,
+            left: '50%',
+            top: '50%',
+            width: 80,
+            height: 80,
+            marginLeft: -40,
+            marginTop: -40,
           }}
         />
       ))}
