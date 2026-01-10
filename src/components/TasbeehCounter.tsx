@@ -10,6 +10,8 @@ import { FloatingOrbs } from "./FloatingOrbs";
 import { useClickSound } from "@/hooks/useClickSound";
 import { Plus, Minus, RotateCcw, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Confetti from "react-confetti";
+
 
 interface TasbeehState {
   count: number;
@@ -81,6 +83,8 @@ export function TasbeehCounter() {
   const hasShownComplete = useRef(false);
   const { toast } = useToast();
   const { playClick, playComplete } = useClickSound(state.soundEnabled);
+  const [showConfetti, setShowConfetti] = useState(false);
+
 
   // Apply color theme CSS variables
   useEffect(() => {
@@ -147,6 +151,9 @@ export function TasbeehCounter() {
   ),
   duration: 3000,
 });
+
+setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 4000);
 
     }
     if (state.count < state.target) {
@@ -224,6 +231,37 @@ export function TasbeehCounter() {
         />
         <ThemeToggle theme={state.theme} onToggle={toggleTheme} />
       </div>
+
+{/* confetti */}
+
+{/* CONFETTI FROM LEFT */}
+{showConfetti && (
+  <Confetti
+    width={window.innerWidth}
+    height={window.innerHeight}
+    numberOfPieces={120}
+    gravity={0.4}
+    initialVelocityX={{ min: 5, max: 15 }}  // moves right
+    initialVelocityY={{ min: -25, max: -5 }} // moves upward slightly
+    recycle={false}
+    confettiSource={{ x: 0, y: window.innerHeight - 10, w: 0, h: 0 }} // bottom-left
+  />
+)}
+
+{/* CONFETTI FROM RIGHT */}
+{showConfetti && (
+  <Confetti
+    width={window.innerWidth}
+    height={window.innerHeight}
+    numberOfPieces={120}
+    gravity={0.4}
+    initialVelocityX={{ min: -15, max: -5 }} // moves left
+    initialVelocityY={{ min: -25, max: -5 }} // moves upward slightly
+    recycle={false}
+    confettiSource={{ x: window.innerWidth, y: window.innerHeight - 10, w: 0, h: 0 }} // bottom-right
+  />
+)}
+
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center gap-5 w-full max-w-md">
