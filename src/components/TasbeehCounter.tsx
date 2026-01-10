@@ -125,11 +125,29 @@ export function TasbeehCounter() {
     if (state.count >= state.target && !hasShownComplete.current) {
       hasShownComplete.current = true;
       playComplete();
+      // toast({
+      //   title: "✨ Target Reached! MashaAllah! ✨",
+      //   description: `You completed ${state.target} counts of "${state.dhikr}"`,
+      //   duration: 5000,
+      // });
+
       toast({
-        title: "✨ MashaAllah! Target Reached ✨",
-        description: `You completed ${state.target} counts of "${state.dhikr}"`,
-        duration: 5000,
-      });
+  title: "",
+  description: (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        <Sparkles className="w-5 h-5 text-primary animate-bounce-soft" />
+        <span className="font-bold">Target Reached! MashaAllah!</span>
+        <Sparkles className="w-5 h-5 text-primary animate-bounce-soft delay-100" />
+      </div>
+      <div>
+        You completed <strong>{state.target}</strong> counts of "<strong>{state.dhikr}</strong>"
+      </div>
+    </div>
+  ),
+  duration: 3000,
+});
+
     }
     if (state.count < state.target) {
       hasShownComplete.current = false;
