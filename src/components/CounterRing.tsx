@@ -132,11 +132,11 @@ export function CounterRing({
             <span
               className={`block text-4xl font-bold transition-all duration-300 ${
                 isAnimating ? "animate-count-up" : ""
-              } ${isComplete ? "text-[hsl(var(--success))]" : "text-gradient"}`}
+              } ${isComplete ? "text-[hsl(var(--success))]" : "text-primary"}`}
             >
               {count}
             </span>
-            <span className="text-xs text-muted-foreground mt-0.5 block">
+            <span className="text-xs text-primary/60 mt-0.5 block">
               of {target}
             </span>
           </div>
