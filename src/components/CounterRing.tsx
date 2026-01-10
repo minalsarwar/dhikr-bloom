@@ -159,14 +159,6 @@ export function CounterRing({
         />
       ))}
 
-      {/* Tap hint */}
-      {count === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="absolute -bottom-8 text-[10px] text-muted-foreground/60 animate-pulse">
-            Tap to count
-          </span>
-        </div>
-      )}
     </button>
   );
 }
