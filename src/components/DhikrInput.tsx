@@ -9,6 +9,7 @@ interface DhikrInputProps {
 
 export function DhikrInput({ value, onChange, suggestions }: DhikrInputProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <div className="relative w-full max-w-xs">
@@ -17,12 +18,15 @@ export function DhikrInput({ value, onChange, suggestions }: DhikrInputProps) {
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Enter Dhikr..."
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Type your dhikr..."
           className="w-full px-5 py-3 pr-12 rounded-2xl glass-strong border border-border/50 text-center text-lg font-medium placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
         />
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-muted/50 transition-colors"
+          title="Choose from suggestions"
         >
           <ChevronDown
             className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${
@@ -31,6 +35,13 @@ export function DhikrInput({ value, onChange, suggestions }: DhikrInputProps) {
           />
         </button>
       </div>
+      
+      {/* Hint text */}
+      {!isFocused && !isOpen && (
+        <p className="text-[10px] text-muted-foreground/60 text-center mt-1.5 animate-pulse">
+          ✏️ Tap to type your own or choose from list
+        </p>
+      )}
 
       {/* Dropdown Suggestions */}
       <div

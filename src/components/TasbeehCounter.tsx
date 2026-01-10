@@ -1,17 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { CounterRing } from "./CounterRing";
 import { DhikrInput } from "./DhikrInput";
 import { TargetSelector } from "./TargetSelector";
 import { ThemeToggle } from "./ThemeToggle";
+import { ThemeSelector, ColorTheme } from "./ThemeSelector";
+import { SoundToggle } from "./SoundToggle";
 import { FloatingOrbs } from "./FloatingOrbs";
+import { useClickSound } from "@/hooks/useClickSound";
 import { Plus, Minus, RotateCcw, Sparkles } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface TasbeehState {
   count: number;
   target: number;
   dhikr: string;
   theme: "light" | "dark";
+  colorTheme: ColorTheme;
+  soundEnabled: boolean;
 }
 
 const COMMON_DHIKR = [
@@ -20,7 +26,46 @@ const COMMON_DHIKR = [
   "Allahu Akbar",
   "La ilaha illallah",
   "Astaghfirullah",
+  "SubhanAllahi wa bihamdihi",
+  "La hawla wala quwwata illa billah",
+  "HasbunAllahu wa ni'mal Wakeel",
+  "Allahumma salli ala Muhammad",
+  "SubhanAllahil Azeem",
 ];
+
+// Color theme CSS variables mapping
+const COLOR_THEMES: Record<ColorTheme, { primary: string; secondary: string; accent: string }> = {
+  lavender: {
+    primary: "262 83% 58%",
+    secondary: "280 65% 60%",
+    accent: "290 70% 65%",
+  },
+  pink: {
+    primary: "330 80% 60%",
+    secondary: "350 75% 65%",
+    accent: "340 85% 55%",
+  },
+  blue: {
+    primary: "210 90% 56%",
+    secondary: "195 85% 52%",
+    accent: "220 85% 60%",
+  },
+  green: {
+    primary: "152 70% 50%",
+    secondary: "140 65% 55%",
+    accent: "160 75% 45%",
+  },
+  red: {
+    primary: "0 75% 60%",
+    secondary: "15 80% 55%",
+    accent: "350 80% 55%",
+  },
+  gold: {
+    primary: "40 90% 50%",
+    secondary: "30 85% 55%",
+    accent: "45 95% 45%",
+  },
+};
 
 export function TasbeehCounter() {
   const [state, setState] = useState<TasbeehState>({
@@ -28,9 +73,22 @@ export function TasbeehCounter() {
     target: 33,
     dhikr: "SubhanAllah",
     theme: "light",
+    colorTheme: "lavender",
+    soundEnabled: false,
   });
   const [isAnimating, setIsAnimating] = useState(false);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const hasShownComplete = useRef(false);
+  const { toast } = useToast();
+  const { playClick, playComplete } = useClickSound(state.soundEnabled);
+
+  // Apply color theme CSS variables
+  useEffect(() => {
+    const colors = COLOR_THEMES[state.colorTheme];
+    document.documentElement.style.setProperty("--primary", colors.primary);
+    document.documentElement.style.setProperty("--secondary", colors.secondary);
+    document.documentElement.style.setProperty("--accent", colors.accent);
+  }, [state.colorTheme]);
 
   // Load from localStorage
   useEffect(() => {
@@ -38,7 +96,7 @@ export function TasbeehCounter() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setState(parsed);
+        setState((prev) => ({ ...prev, ...parsed }));
         if (parsed.theme === "dark") {
           document.documentElement.classList.add("dark");
         }
@@ -62,10 +120,27 @@ export function TasbeehCounter() {
     }
   }, [state.theme]);
 
+  // Show completion toast
+  useEffect(() => {
+    if (state.count >= state.target && !hasShownComplete.current) {
+      hasShownComplete.current = true;
+      playComplete();
+      toast({
+        title: "✨ MashaAllah! Target Reached ✨",
+        description: `You completed ${state.target} counts of "${state.dhikr}"`,
+        duration: 5000,
+      });
+    }
+    if (state.count < state.target) {
+      hasShownComplete.current = false;
+    }
+  }, [state.count, state.target, state.dhikr, toast, playComplete]);
+
   const handleIncrement = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     if (state.count < state.target) {
       setState((prev) => ({ ...prev, count: prev.count + 1 }));
       setIsAnimating(true);
+      playClick();
       
       // Create ripple effect
       const rect = e.currentTarget.getBoundingClientRect();
@@ -80,7 +155,7 @@ export function TasbeehCounter() {
       
       setTimeout(() => setIsAnimating(false), 300);
     }
-  }, [state.count, state.target]);
+  }, [state.count, state.target, playClick]);
 
   const handleDecrement = useCallback(() => {
     if (state.count > 0) {
@@ -90,6 +165,7 @@ export function TasbeehCounter() {
 
   const handleReset = useCallback(() => {
     setState((prev) => ({ ...prev, count: 0 }));
+    hasShownComplete.current = false;
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 300);
   }, []);
@@ -101,12 +177,19 @@ export function TasbeehCounter() {
     }));
   }, []);
 
+  const toggleSound = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      soundEnabled: !prev.soundEnabled,
+    }));
+  }, []);
+
   const isComplete = state.count >= state.target;
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-8 overflow-hidden">
+    <div className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
       {/* Background Effects */}
-      <FloatingOrbs />
+      <FloatingOrbs colorTheme={state.colorTheme} />
       
       {/* Ambient Glow */}
       <div className="fixed inset-0 pointer-events-none">
@@ -114,19 +197,26 @@ export function TasbeehCounter() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-glow-pulse delay-1000" />
       </div>
 
-      {/* Theme Toggle */}
-      <ThemeToggle theme={state.theme} onToggle={toggleTheme} />
+      {/* Top Controls */}
+      <div className="fixed top-4 right-4 z-20 flex items-center gap-2">
+        <SoundToggle enabled={state.soundEnabled} onToggle={toggleSound} />
+        <ThemeSelector 
+          theme={state.colorTheme} 
+          onChange={(colorTheme) => setState((prev) => ({ ...prev, colorTheme }))} 
+        />
+        <ThemeToggle theme={state.theme} onToggle={toggleTheme} />
+      </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-md">
+      <div className="relative z-10 flex flex-col items-center gap-5 w-full max-w-md">
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           <div className="flex items-center justify-center gap-2">
-            <Sparkles className="w-6 h-6 text-primary animate-bounce-soft" />
-            <h1 className="text-3xl md:text-4xl font-bold text-gradient">Tasbeeh</h1>
-            <Sparkles className="w-6 h-6 text-secondary animate-bounce-soft delay-100" />
+            <Sparkles className="w-5 h-5 text-primary animate-bounce-soft" />
+            <h1 className="text-2xl md:text-3xl font-bold text-gradient">DhikrBloom</h1>
+            <Sparkles className="w-5 h-5 text-secondary animate-bounce-soft delay-100" />
           </div>
-          <p className="text-muted-foreground text-sm">Digital Dhikr Counter</p>
+          <p className="text-muted-foreground text-xs">Nurture Your Soul, One Count at a Time</p>
         </div>
 
         {/* Dhikr Input */}
@@ -144,6 +234,7 @@ export function TasbeehCounter() {
           isComplete={isComplete}
           onClick={handleIncrement}
           ripples={ripples}
+          colorTheme={state.colorTheme}
         />
 
         {/* Target Display */}
@@ -161,7 +252,7 @@ export function TasbeehCounter() {
             disabled={state.count === 0}
             className="group"
           >
-            <Minus className="w-6 h-6 transition-transform group-hover:scale-110" />
+            <Minus className="w-5 h-5 transition-transform group-hover:scale-110" />
           </Button>
 
           <Button
@@ -171,7 +262,7 @@ export function TasbeehCounter() {
             disabled={isComplete}
             className="relative overflow-hidden"
           >
-            <Plus className="w-8 h-8 transition-transform hover:rotate-90" />
+            <Plus className="w-7 h-7 transition-transform hover:rotate-90" />
             {ripples.map((ripple) => (
               <span
                 key={ripple.id}
@@ -194,18 +285,9 @@ export function TasbeehCounter() {
             onClick={handleReset}
             className="group"
           >
-            <RotateCcw className="w-6 h-6 transition-transform group-hover:-rotate-180 duration-500" />
+            <RotateCcw className="w-5 h-5 transition-transform group-hover:-rotate-180 duration-500" />
           </Button>
         </div>
-
-        {/* Completion Message */}
-        {isComplete && (
-          <div className="glass-strong rounded-2xl px-6 py-4 text-center animate-float shadow-glow">
-            <p className="text-lg font-semibold text-gradient">
-              ✨ Target Reached! MashaAllah ✨
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

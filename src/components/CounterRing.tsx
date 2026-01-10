@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { ColorTheme } from "./ThemeSelector";
 
 interface CounterRingProps {
   count: number;
@@ -7,7 +8,18 @@ interface CounterRingProps {
   isComplete: boolean;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   ripples: { id: number; x: number; y: number }[];
+  colorTheme: ColorTheme;
 }
+
+// Theme gradient colors for the ring
+const RING_GRADIENTS: Record<ColorTheme, { start: string; mid: string; end: string }> = {
+  lavender: { start: "#a78bfa", mid: "#c4b5fd", end: "#8b5cf6" },
+  pink: { start: "#f472b6", mid: "#fb7185", end: "#ec4899" },
+  blue: { start: "#60a5fa", mid: "#38bdf8", end: "#3b82f6" },
+  green: { start: "#34d399", mid: "#4ade80", end: "#10b981" },
+  red: { start: "#f87171", mid: "#fca5a5", end: "#ef4444" },
+  gold: { start: "#fbbf24", mid: "#fcd34d", end: "#d97706" },
+};
 
 export function CounterRing({
   count,
@@ -16,13 +28,15 @@ export function CounterRing({
   isComplete,
   onClick,
   ripples,
+  colorTheme,
 }: CounterRingProps) {
   const progress = useMemo(() => {
     return Math.min((count / target) * 100, 100);
   }, [count, target]);
 
-  const circumference = 2 * Math.PI * 90;
+  const circumference = 2 * Math.PI * 85;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
+  const gradient = RING_GRADIENTS[colorTheme];
 
   return (
     <button
@@ -39,69 +53,78 @@ export function CounterRing({
       
       {/* Pulse Rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className={`absolute w-52 h-52 rounded-full border-2 border-primary/20 ${isAnimating ? "animate-pulse-ring" : ""}`} />
-        <div className={`absolute w-52 h-52 rounded-full border-2 border-secondary/20 ${isAnimating ? "animate-pulse-ring delay-150" : ""}`} />
+        <div className={`absolute w-48 h-48 rounded-full border-2 border-primary/20 ${isAnimating ? "animate-pulse-ring" : ""}`} />
+        <div className={`absolute w-48 h-48 rounded-full border-2 border-secondary/20 ${isAnimating ? "animate-pulse-ring delay-150" : ""}`} />
       </div>
 
       {/* SVG Progress Ring */}
       <svg
-        className="w-52 h-52 -rotate-90 drop-shadow-lg"
+        className="w-48 h-48 -rotate-90 drop-shadow-lg"
         viewBox="0 0 200 200"
       >
         {/* Background Track */}
         <circle
           cx="100"
           cy="100"
-          r="90"
+          r="85"
           fill="none"
           stroke="hsl(var(--muted))"
-          strokeWidth="8"
-          className="opacity-50"
+          strokeWidth="10"
+          className="opacity-40"
         />
         
         {/* Gradient Definition */}
         <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" />
-            <stop offset="50%" stopColor="hsl(var(--secondary))" />
-            <stop offset="100%" stopColor="hsl(var(--accent))" />
+          <linearGradient id={`progressGradient-${colorTheme}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={gradient.start} />
+            <stop offset="50%" stopColor={gradient.mid} />
+            <stop offset="100%" stopColor={gradient.end} />
           </linearGradient>
           <linearGradient id="completeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="hsl(var(--success))" />
             <stop offset="100%" stopColor="hsl(160 80% 55%)" />
           </linearGradient>
+          {/* Glow filter */}
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
 
         {/* Progress Arc */}
         <circle
           cx="100"
           cy="100"
-          r="90"
+          r="85"
           fill="none"
-          stroke={isComplete ? "url(#completeGradient)" : "url(#progressGradient)"}
-          strokeWidth="10"
+          stroke={isComplete ? "url(#completeGradient)" : `url(#progressGradient-${colorTheme})`}
+          strokeWidth="12"
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          className="transition-all duration-500 ease-out drop-shadow-md"
+          className="transition-all duration-500 ease-out"
+          filter="url(#glow)"
         />
       </svg>
 
       {/* Inner Circle */}
-      <div className={`absolute inset-0 flex items-center justify-center`}>
-        <div className={`w-40 h-40 rounded-full glass-strong flex items-center justify-center transition-all duration-300 ${
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className={`w-36 h-36 rounded-full glass-strong flex items-center justify-center transition-all duration-300 ${
           isComplete ? "border-2 border-[hsl(var(--success))]" : "border border-border/50"
         }`}>
           {/* Count Display */}
           <div className="text-center">
             <span
-              className={`block text-5xl font-bold transition-all duration-300 ${
+              className={`block text-4xl font-bold transition-all duration-300 ${
                 isAnimating ? "animate-count-up" : ""
               } ${isComplete ? "text-[hsl(var(--success))]" : "text-gradient"}`}
             >
               {count}
             </span>
-            <span className="text-xs text-muted-foreground mt-1 block">
+            <span className="text-xs text-muted-foreground mt-0.5 block">
               of {target}
             </span>
           </div>
@@ -123,6 +146,15 @@ export function CounterRing({
           }}
         />
       ))}
+
+      {/* Tap hint */}
+      {count === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="absolute -bottom-8 text-[10px] text-muted-foreground/60 animate-pulse">
+            Tap to count
+          </span>
+        </div>
+      )}
     </button>
   );
 }
