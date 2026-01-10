@@ -22,7 +22,7 @@ export function TargetSelector({ target, onChange }: TargetSelectorProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-2 text-muted-foreground">
+      <div className="flex items-center gap-2 text-primary">
         <Target className="w-4 h-4" />
         <span className="text-sm font-medium">Target</span>
       </div>
@@ -34,8 +34,8 @@ export function TargetSelector({ target, onChange }: TargetSelectorProps) {
             onClick={() => onChange(preset)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
               target === preset
-                ? "gradient-primary text-primary-foreground shadow-soft scale-105"
-                : "glass border border-border/50 hover:border-primary/50 hover:bg-primary/5"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-105"
+                : "glass border border-primary/30 text-primary hover:border-primary hover:bg-primary/10"
             }`}
           >
             {preset}
@@ -56,7 +56,7 @@ export function TargetSelector({ target, onChange }: TargetSelectorProps) {
             />
             <button
               onClick={handleCustomSubmit}
-              className="p-2 rounded-xl gradient-primary text-primary-foreground shadow-soft hover:shadow-glow transition-all"
+              className="p-2 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all"
             >
               <Check className="w-4 h-4" />
             </button>
@@ -67,9 +67,9 @@ export function TargetSelector({ target, onChange }: TargetSelectorProps) {
               setCustomValue(target.toString());
               setIsEditing(true);
             }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 glass border border-dashed border-muted-foreground/30 hover:border-primary/50 ${
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 glass border border-dashed border-primary/30 text-primary hover:border-primary hover:bg-primary/10 ${
               !PRESET_TARGETS.includes(target)
-                ? "border-solid border-primary bg-primary/10"
+                ? "border-solid bg-primary text-primary-foreground"
                 : ""
             }`}
           >
