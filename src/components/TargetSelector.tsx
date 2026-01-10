@@ -6,7 +6,7 @@ interface TargetSelectorProps {
   onChange: (target: number) => void;
 }
 
-const PRESET_TARGETS = [33, 99, 100, 500, 1000];
+const PRESET_TARGETS = [33, 100, 500, 1000];
 
 export function TargetSelector({ target, onChange }: TargetSelectorProps) {
   const [isEditing, setIsEditing] = useState(false);
