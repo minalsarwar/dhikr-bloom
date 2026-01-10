@@ -137,7 +137,7 @@ export function TasbeehCounter() {
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
         <Sparkles className="w-5 h-5 text-primary animate-bounce-soft" />
-        <span className="font-bold">Target Reached! MashaAllah!</span>
+        <span className="font-bold">Target Reached! MashaAllah</span>
         <Sparkles className="w-5 h-5 text-primary animate-bounce-soft delay-100" />
       </div>
       <div>
