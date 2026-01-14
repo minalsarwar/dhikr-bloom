@@ -270,7 +270,7 @@ setShowConfetti(true);
       width={window.innerWidth}
       height={window.innerHeight}
       numberOfPieces={120}
-      gravity={0.4}
+      gravity={0.25}
       initialVelocityX={{ min: 5, max: 15 }}
       initialVelocityY={{ min: -25, max: -20}}
       recycle={false}
@@ -282,7 +282,7 @@ setShowConfetti(true);
       width={window.innerWidth}
       height={window.innerHeight}
       numberOfPieces={120}
-      gravity={0.4}
+      gravity={0.25}
       initialVelocityX={{ min: -15, max: -5 }}
       initialVelocityY={{ min: -25, max: -20}}
       recycle={false}
