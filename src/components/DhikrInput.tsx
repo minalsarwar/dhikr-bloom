@@ -36,6 +36,14 @@ export function DhikrInput({ value, onChange, suggestions }: DhikrInputProps) {
         </button>
       </div>
 
+      {/* inserting input logic here */}
+      {value.length > 24 && (
+  <div className="mt-2 px-4 py-2 rounded-xl glass-strong text-sm text-primary/80 text-center leading-relaxed animate-fade-in">
+    {value}
+  </div>
+)}
+
+
       {/* Dropdown Suggestions */}
       <div
         className={`absolute top-full left-0 right-0 mt-2 glass-strong rounded-2xl border border-border/50 z-50 transition-all duration-300 origin-top max-h-64 overflow-y-auto ${

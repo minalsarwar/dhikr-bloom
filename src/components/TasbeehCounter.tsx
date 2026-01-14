@@ -149,7 +149,7 @@ export function TasbeehCounter() {
       </div>
     </div>
   ),
-  duration: 3000,
+  duration: 2000,
 });
 
 setShowConfetti(true);
@@ -235,7 +235,7 @@ setShowConfetti(true);
 {/* confetti */}
 
 {/* CONFETTI FROM LEFT */}
-{showConfetti && (
+{/* {showConfetti && (
   <Confetti
     width={window.innerWidth}
     height={window.innerHeight}
@@ -246,10 +246,10 @@ setShowConfetti(true);
     recycle={false}
     confettiSource={{ x: 0, y: window.innerHeight - 10, w: 0, h: 0 }} // bottom-left
   />
-)}
+)} */}
 
 {/* CONFETTI FROM RIGHT */}
-{showConfetti && (
+{/* {showConfetti && (
   <Confetti
     width={window.innerWidth}
     height={window.innerHeight}
@@ -260,7 +260,37 @@ setShowConfetti(true);
     recycle={false}
     confettiSource={{ x: window.innerWidth, y: window.innerHeight - 10, w: 0, h: 0 }} // bottom-right
   />
+)} */}
+
+{/* CONFETTI – FRONT MOST LAYER */}
+{showConfetti && (
+  <div className="fixed inset-0 z-[9999] pointer-events-none">
+    {/* FROM LEFT */}
+    <Confetti
+      width={window.innerWidth}
+      height={window.innerHeight}
+      numberOfPieces={120}
+      gravity={0.4}
+      initialVelocityX={{ min: 5, max: 15 }}
+      initialVelocityY={{ min: -25, max: -20}}
+      recycle={false}
+      confettiSource={{ x: 0, y: window.innerHeight, w: 0, h: 0 }}
+    />
+
+    {/* FROM RIGHT */}
+    <Confetti
+      width={window.innerWidth}
+      height={window.innerHeight}
+      numberOfPieces={120}
+      gravity={0.4}
+      initialVelocityX={{ min: -15, max: -5 }}
+      initialVelocityY={{ min: -25, max: -20}}
+      recycle={false}
+      confettiSource={{ x: window.innerWidth, y: window.innerHeight, w: 0, h: 0 }}
+    />
+  </div>
 )}
+
 
 
       {/* Main Content */}
