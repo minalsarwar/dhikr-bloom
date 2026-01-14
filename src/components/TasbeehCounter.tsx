@@ -149,7 +149,7 @@ export function TasbeehCounter() {
       </div>
     </div>
   ),
-  duration: 2000,
+  duration: 1500,
 });
 
 setShowConfetti(true);
